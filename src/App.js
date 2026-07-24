@@ -1,55 +1,34 @@
-import React, { useState, useEffect } from "react";
-import { View, FlatList } from "react-native";
-import { PaperProvider, Appbar, ActivityIndicator } from "react-native-paper";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import { getPokemons } from "../services/pokeApi";
-import PokeCard from "../components/PokeCard/PokeCard";
-import styles from "./styles";
+import Home from "../Pages/Home/Home";
+import Favorites from "../Pages/Favorites/Favorites";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-  const [pokemons, setPokemons] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function carregarDados() {
-      try {
-        const lista = await getPokemons(151);
-        setPokemons(lista);
-      } catch (error) {
-        console.error("Erro ao carregar Pokémons:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    carregarDados();
-  }, []);
-
   return (
-    <PaperProvider>
-      <Appbar.Header style={{ backgroundColor: "#d32f2f" }}>
-        <Appbar.Content
-          title="Pokédex"
-          titleStyle={{ fontWeight: 900, color: "#fff" }}
-          style={{ alignItems: "center" }}
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: { backgroundColor: "#d32f2f" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold"},
+          headerTitleAlign: "center",
+        }}
+      >
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ title: "Pokédex" }}
         />
-      </Appbar.Header>
-
-      <View style={styles.container}>
-        {loading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" />
-          </View>
-        ) : (
-          <FlatList
-            data={pokemons}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <PokeCard name={item.name} image={item.image} type={item.type} />
-            )}
-          />
-        )}
-      </View>
-    </PaperProvider>
+        <Stack.Screen
+          name="Favorites"
+          component={Favorites}
+          options={{ title: "Favorites" }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
