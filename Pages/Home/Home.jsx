@@ -51,7 +51,12 @@ export default function Home({ navigation }) {
             data={pokemons}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <PokeCard name={item.name} image={item.image} type={item.type} />
+              <PokeCard
+                id={item.id}
+                name={item.name}
+                image={item.image}
+                type={item.type}
+              />
             )}
           />
         )}
